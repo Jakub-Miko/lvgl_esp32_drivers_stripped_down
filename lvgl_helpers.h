@@ -5,6 +5,8 @@
 #ifndef LVGL_HELPERS_H
 #define LVGL_HELPERS_H
 
+#define LV_HOR_RES_MAX 128
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -13,6 +13,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "assert.h"
+#include <rom/gpio.h>
 
 /*********************
  *      DEFINES
@@ -145,9 +146,9 @@ void ili9163c_init(void)
 
 	//Reset the display
 	gpio_set_level(ILI9163C_RST, 0);
-	vTaskDelay(100 / portTICK_RATE_MS);
+	vTaskDelay(100 / portTICK_PERIOD_MS);
 	gpio_set_level(ILI9163C_RST, 1);
-	vTaskDelay(150 / portTICK_RATE_MS);
+	vTaskDelay(150 / portTICK_PERIOD_MS);
 
 	//Send all the commands
 	uint16_t cmd = 0;
@@ -157,7 +158,7 @@ void ili9163c_init(void)
 		ili9163c_send_data(ili_init_cmds[cmd].data, ili_init_cmds[cmd].databytes & 0x1F);
 		if (ili_init_cmds[cmd].databytes & 0x80)
 		{
-			vTaskDelay(150 / portTICK_RATE_MS);
+			vTaskDelay(150 / portTICK_PERIOD_MS);
 		}
 		cmd++;
 	}
@@ -241,7 +242,7 @@ static void ili9163c_set_orientation(uint8_t orientation)
 
 	ESP_LOGD(TAG, "Display orientation: %s", orientation_str[orientation]);
 
-	uint8_t data[] = {0x48, 0x88, 0xA8, 0x68};
+	uint8_t data[] = {0xC8, 0x88, 0xA8, 0x68};
 
 	ili9163c_send_cmd(ILI9163C_MADCTL);
 	ili9163c_send_data((void *)&data[orientation], 1);
